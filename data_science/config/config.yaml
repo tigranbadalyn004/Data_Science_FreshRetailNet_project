@@ -1,0 +1,166 @@
+data:
+  train_path : "C:/data_science/data/raw/train.csv"
+  eval_path: "C:/data_science/data/raw/eval.csv"
+  fracture: 0.1  # Fraction of data to use for quick experiments
+  target_column: "sale_amount"
+  datetime_column: "dt"
+  
+preprocessing:
+  # Feature engineering configuration
+  lag_periods: [1, 2, 3, 7, 14, 21]  # Hours to lag
+  rolling_windows: [6, 24, 168]      # 6h, 1day, 1week
+  seasonal_periods: [24, 168]        # Daily and weekly patterns
+  outlier_threshold: 3.0             # Z-score threshold
+  
+models:
+  baseline:
+    naive:
+      seasonal_period: 24
+    linear_regression:
+      alpha: 1.0
+      normalize: true
+    random_forest:
+      n_estimators: 100
+      max_depth: 10
+      random_state: 42
+      
+  advanced:
+    lstm:
+      hidden_size: 64
+      num_layers: 2
+      dropout: 0.2
+      sequence_length: 168  # 1 week
+      
+training:
+  test_size: 0.2
+  validation_size: 0.1
+  cv_folds: 5
+  random_state: 42
+  
+evaluation:
+  metrics: ["mae", "rmse", "mape", "bias"]
+  forecast_horizons: [1, 6, 24, 168]  # 1h, 6h, 1day, 1week
+
+  models:
+  baseline:
+    naive:
+      use_models: ["simple_naive", "seasonal_naive", "moving_average"]
+      seasonal_period: 168   # weekly cycle in hours
+      moving_average:
+        windows: [6, 24, 168]    # hours
+        weights: null           # null = use exponential recency weights by default
+
+
+models:
+  baseline:
+    linear:
+      model_type: "ridge"        # "linear" or "ridge"
+      ridge_alpha: 1.0           # if using Ridge
+      features:
+        lags: [1, 7, 168]        # hours
+        cyclical: true
+        fillna_value: 0.0
+      training:
+        test_size: 0.2
+        random_state: 42
+        use_scaler: true
+
+models:
+  baseline:
+    tree:
+      random_forest:
+        n_estimators: 100
+        max_depth: 10
+        min_samples_split: 2
+        min_samples_leaf: 1
+        random_state: 42
+        features:
+          lags: [1, 7, 168]
+          use_cyclical: true
+          fillna_value: 0.0
+        training:
+          test_size: 0.2
+
+models:
+  baseline:
+    tree:
+      xgboost:
+        n_estimators: 100
+        max_depth: 6
+        learning_rate: 0.1
+        subsample: 0.8
+        colsample_bytree: 0.8
+        random_state: 42
+        features:
+          lags: [1, 7, 168]
+          use_cyclical: true
+          fillna_value: 0.0
+        training:
+          test_size: 0.2
+
+models:
+  baseline:
+    ensemble:
+      stacking:
+        base_models:
+          - linear
+          - rf
+          - xgboost
+        meta_model:
+          type: linear
+        test_size: 0.2
+        random_state: 42
+        features:
+          lags: [1, 7, 168]
+          use_cyclical: true
+          fillna_value: 0.0
+
+
+evaluation:
+  metrics:
+    core: ["mae", "rmse", "mape", "bias"]
+    business:
+      high_volume_products: true
+      low_volume_products: true
+      peak_hours: true
+      offpeak_hours: true
+      stockout_vs_instock: true
+  forecast_horizons: [1, 6, 24, 168]  # 1h, 6h, 1day, 1week
+  aggregation_levels:
+    product_level: true
+    category_level: true
+    store_level: true
+  visualization:
+    plot_types: ["time_series", "residuals", "feature_importance"]
+    save_plots: true
+    output_dir: "C:/data_science/reports/figures/"
+
+preprocessing:
+  lag_periods: [1,2,3,6,24,48,168]
+  rolling_windows: [6,24,168]
+
+
+preprocessing:
+  weather:
+    temp_bins: [-inf, 10, 25, inf]
+    temp_labels: ["cold","mild","hot"]
+    precip_bins: [-inf, 0, 2, 5, inf]
+    precip_labels: ["none","light","moderate","heavy"]
+
+preprocessing:
+  promo:
+    discount_bins: [-inf, 0, 10, 20, inf]
+    discount_labels: ["none","small","medium","large"]
+
+
+preprocessing:
+  feature_engineering:
+    velocity_window: 7
+    product_stage_bins: [-inf,10,50,inf]
+    product_stage_labels: ["new","mature","declining"]
+    store_agg_metrics:
+      - total_sales
+      - num_products
+      - avg_sales_per_product
+      - stockout_freq
+

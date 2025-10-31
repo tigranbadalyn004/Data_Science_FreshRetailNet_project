@@ -1,3 +1,7 @@
+Dataset
+CSV is available: https://drive.google.com/drive/u/0/folders/1BGlNYESpQiwfIQ8ZeLsV5P0zeGeUXuHj
+
+
 # Data_Science_FreshRetailNet_project
 Full data science project: retail demand forecasting, feature engineering, baseline and advanced ML models.
 

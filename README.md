@@ -1,6 +1,8 @@
-Dataset
+# Dataset
 CSV is available: https://drive.google.com/drive/u/0/folders/1BGlNYESpQiwfIQ8ZeLsV5P0zeGeUXuHj
-
+## Datasets
+All the necessary CSV files are available in this folder:
+Datasets folder https://drive.google.com/drive/folders/1Tb-LKSdcF6wV7njp5RUfxV1JBdX3nB-t?usp=drive_link
 
 # Data_Science_FreshRetailNet_project
 Full data science project: retail demand forecasting, feature engineering, baseline and advanced ML models.
